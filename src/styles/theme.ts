@@ -6,7 +6,7 @@ export const theme = {
         pallete4: '#512500',
         pallete5: '#EFC7C2',
         text: '#FFFFFF',
-        palleteHighConstrast: '#FFFFFF',
+        palleteHighConstrast: 'rgba(255, 255, 255, 0.85)',
     }
 }
 

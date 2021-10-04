@@ -1,11 +1,11 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import React from 'react'
 import Preload from '../screens/Preload'
-import Start from '../screens/Start'
+import MainTab from './MainTab'
 
 type StackParamList = {
   Preload: {}
-  Start: {}
+  MainTab: {}
 }
 
 const Stack = createStackNavigator<StackParamList>()
@@ -17,7 +17,7 @@ export default () => {
       }}
     >
       <Stack.Screen name="Preload" component={Preload} />
-      <Stack.Screen name="Start" component={Start} />
+      <Stack.Screen name="MainTab" component={MainTab} />
     </Stack.Navigator>
   )
 }

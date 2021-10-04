@@ -1,7 +1,7 @@
-import styled from "styled-components/native";
+import styled from 'styled-components/native'
 
-import { Text } from "../../components/Texts";
+import {Text} from '../../components/Texts'
 
 export const TextPadded = styled(Text)`
-    padding-top: 10px;
+  padding-top: 10px;
 `

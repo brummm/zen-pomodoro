@@ -1,16 +1,17 @@
-import { useNavigation } from '@react-navigation/core'
-import React, { useEffect } from 'react'
+import {useNavigation} from '@react-navigation/core'
+import React, {useEffect} from 'react'
 import Brand from '../../assets/brand.svg'
-import { Container, LoadingIcon } from '../../styles/global'
+import {Container, LoadingIcon} from '../../styles/global'
 import theme from '../../styles/theme'
-import { TextPadded } from './styles'
+import {TextPadded} from './styles'
 
 export const Preload: React.FC = () => {
-
   const navigation = useNavigation()
 
   useEffect(() => {
-    navigation.navigate('Start')
+    navigation.reset({
+      routes: [{name: 'MainTab'}],
+    })
   }, [])
 
   return (
