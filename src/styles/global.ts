@@ -12,3 +12,12 @@ export const Container = styled.SafeAreaView`
 export const LoadingIcon = styled.ActivityIndicator`
   margin-top: 50px;
 `
+
+export const Text = styled.Text`
+  font-family: 'Roboto';
+  font-weight: 100;
+`
+
+export const TextMedium = styled.Text`
+  font-size: 18px;
+`
