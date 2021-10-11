@@ -1,9 +1,9 @@
 // as seen on https://www.youtube.com/watch?v=Y50CQfyFkGI&ab_channel=WilliamCandillon
 import React, {useEffect, useRef, useState} from 'react'
 import {Animated, Easing} from 'react-native'
-import Svg, {Circle, G} from 'react-native-svg'
+import Svg, {Circle, CircleProps, G} from 'react-native-svg'
 import {secondsToString} from '../../lib/Date'
-import {TextBig, TextSmall} from '../../styles/global'
+import {Textasdfasdf, TextBig, TextSmall} from '../../styles/global'
 import theme from '../../styles/theme'
 import {TextContainer} from './styles'
 
@@ -16,6 +16,8 @@ const halfCircle = radius + strokeWidth
 const AnimatedCircle = Animated.createAnimatedComponent(Circle)
 interface CircularProgressProps {
   startFn: CallableFunction
+  completedFn: CallableFunction,
+  paused: boolean
   progress: number
   timer?: number
   total?: number
@@ -26,6 +28,8 @@ const alpha = Math.PI * 2 * radius
 
 export const CircularProgress: React.FC<CircularProgressProps> = ({
   startFn,
+  completedFn,
+  paused,
   progress,
   timer,
   total,
@@ -34,6 +38,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
   const strokeDashoffset = alpha * progress
   const strokeDashValue = useRef(new Animated.Value(strokeDashoffset)).current
   const [timerString, setTimerString] = useState<string | undefined>(undefined)
+  const blinkAnimation = new Animated.Value(1)
 
   useEffect(() => {
     if (timer !== undefined) {
@@ -44,6 +49,9 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
         useNativeDriver: true,
       }).start()
       setTimerString(secondsToString(timer))
+      if (timer === 0) {
+        completedFn()
+      }
     } else {
       Animated.timing(strokeDashValue, {
         toValue: 0,
@@ -54,6 +62,31 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
       setTimerString(undefined)
     }
   }, [timer])
+
+  useEffect(() => {
+    if (paused) {
+      blinkAnimation.setValue(0)
+      const animationProps = {
+        duration: 500,
+        useNativeDriver: true,
+      }
+      console.log('passou')
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(blinkAnimation, {
+            toValue: 0,
+            ...animationProps,
+          }),
+          Animated.timing(blinkAnimation, {
+            toValue: 1,
+            ...animationProps,
+          }),
+        ]),
+      ).start()
+    } else {
+      blinkAnimation.setValue(1)
+    }
+  }, [paused])
 
   const handlePressStart = async () => {
     if (startFn !== undefined) {
@@ -79,23 +112,35 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
     fontWeight: 300,
     textAlign: 'center',
     style: {
-      color: theme.colors.palleteHighConstrast
-    }
+      color: theme.colors.palleteHighConstrast,
+    },
+  }
+
+  const defaultValuesForCircle: CircleProps = {
+    fill: 'none',
+    cx: size / 2,
+    cy: size / 2,
+    r: radius,
+    strokeDasharray: circumference,
+    strokeLinecap: 'round',
+    ...{strokeWidth},
   }
 
   return (
     <>
       <TextContainer>
         {timer === undefined && (
-          <TextSmall {...{...defaultCenteredValues, ...defaultValuesForText}}>Tap to start.</TextSmall>
+          <TextSmall {...{...defaultCenteredValues, ...defaultValuesForText}} textAlign="center">Tap to start.</TextSmall>
         )}
         {timer !== undefined && timerString !== undefined && (
-          <>
-            <TextBig {...defaultValuesForText}>{timerString}</TextBig>
-            <TextSmall {...defaultValuesForText}>
+          <Animated.View style={{opacity: blinkAnimation}}>
+            <TextBig {...defaultValuesForText} textAlign="center">
+              {timerString}
+            </TextBig>
+            <TextSmall {...defaultValuesForText} textAlign="center">
               {current}/{total}
             </TextSmall>
-          </>
+          </Animated.View>
         )}
       </TextContainer>
       <Svg
@@ -105,16 +150,11 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
         disabled={timer !== undefined}
         onPress={handlePressStart}>
         <G rotation="-90" origin={`${halfCircle}, ${halfCircle}`}>
+          <Circle stroke="rgba(0, 0, 0, .1)" {...defaultValuesForCircle} />
           <AnimatedCircle
             stroke={theme.colors.palleteHighConstrast}
-            fill="none"
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            strokeLinecap="round"
-            strokeDasharray={circumference}
             strokeDashoffset={strokeDashValue}
-            {...{strokeWidth}}
+            {...defaultValuesForCircle}
           />
         </G>
       </Svg>

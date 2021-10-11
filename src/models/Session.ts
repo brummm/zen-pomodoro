@@ -1,20 +1,13 @@
 import {createDatabaseConnection, DatabaseConnection} from '../lib/DatabaseConnection'
+import { Time } from './Time'
 
 const TABLE = 'sessions'
 interface Config {
   database?: DatabaseConnection
 }
 
-export enum SessionType {
-    INTERVAL,
-    BIG_INTERVAL,
-    FOCUS
-}
-
 export type Session = {
-    time: number
-    completed: boolean
-    type: SessionType
+    times: Time[]
 }
 export const createSession = (config?: Config) => {
   const databaseConnection = config?.database || createDatabaseConnection()

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import FaChartBar from '../../assets/icons/FaChartBar.svg'
 import FaStopwatch from '../../assets/icons/FaStopwatch.svg'
 import { Calendar } from '../../components/Calendar'
-import { createSession } from '../../models/Sessions'
+import { createSession } from '../../models/Session'
 import theme from '../../styles/theme'
 import { BottomRow, Container, FocussedTime, StatsButton, Time, TimeText, TimeTextLabel, Title } from './styles'
 

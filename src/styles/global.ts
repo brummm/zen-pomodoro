@@ -1,5 +1,7 @@
-import React from 'react'
-import styled from 'styled-components/native'
+import React, {RefAttributes} from 'react'
+import {TextProps} from 'react-native'
+import {ThemedStyledProps} from 'styled-components'
+import styled, {DefaultTheme} from 'styled-components/native'
 
 export const Container = styled.SafeAreaView`
   align-items: center;
@@ -13,9 +15,14 @@ export const LoadingIcon = styled.ActivityIndicator`
   margin-top: 50px;
 `
 
-export const Text = styled.Text`
+export const Textasdfasdf = styled.Text``
+interface Props {
+  textAlign?: string
+}
+export const Text = styled.Text<Props & ThemedStyledProps<TextProps & RefAttributes<Text>, DefaultTheme>>`
   font-family: 'Roboto-Light';
   font-weight: 100;
+  text-align: ${props => props.textAlign || 'left'};
 `
 
 export const TextMedium = styled(Text)`
