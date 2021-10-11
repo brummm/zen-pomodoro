@@ -14,10 +14,17 @@ export const LoadingIcon = styled.ActivityIndicator`
 `
 
 export const Text = styled.Text`
-  font-family: 'Roboto';
+  font-family: 'Roboto-Light';
   font-weight: 100;
 `
 
-export const TextMedium = styled.Text`
+export const TextMedium = styled(Text)`
   font-size: 18px;
+`
+export const TextSmall = styled(Text)`
+  font-size: 14px;
+`
+
+export const TextBig = styled(Text)`
+  font-size: 36px;
 `

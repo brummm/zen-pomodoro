@@ -1,4 +1,5 @@
 import styled from 'styled-components/native'
+import { Text } from '../../styles/global'
 import theme from '../../styles/theme'
 
 export const Container = styled.SafeAreaView`
@@ -9,8 +10,7 @@ export const Container = styled.SafeAreaView`
   padding: 50px;
 `
 
-const TextDefault = styled.Text`
-  font-family: 'Roboto-Light';
+const TextDefault = styled(Text)`
   color: ${theme.colors.pallete3};
 `
 

@@ -1,15 +1,35 @@
-import React from 'react'
-import FaStopwatch from '../../assets/icons/FaStopwatch.svg'
+import React, { useState } from 'react'
 import FaChartBar from '../../assets/icons/FaChartBar.svg'
+import FaStopwatch from '../../assets/icons/FaStopwatch.svg'
 import { Calendar } from '../../components/Calendar'
+import { createSession } from '../../models/Sessions'
 import theme from '../../styles/theme'
 import { BottomRow, Container, FocussedTime, StatsButton, Time, TimeText, TimeTextLabel, Title } from './styles'
 
 export const Reports: React.FC = () => {
+  const date = new Date()
+  const [year, setYear] = useState(date.getFullYear())
+  const [month, setMonth] = useState(date.getMonth())
+
+  const session = createSession()
+
+  const changeMonth = (amount: number) => {
+    let finalMonth = month + amount
+    if (finalMonth < 0) {
+      setYear(year - 1)
+      setMonth(11)
+    } else if (finalMonth > 11) {
+      setYear(year + 1)
+      setMonth(0)
+    } else {
+      setMonth(finalMonth)
+    }
+  }
+  
   return (
     <Container>
       <Title>Usage Report</Title>
-      <Calendar month={0} year={2021} />
+      <Calendar month={month} year={year} changeMonth={changeMonth} />
       <BottomRow>
         <FocussedTime>
           <FaStopwatch width="24" height="24" fill={theme.colors.pallete3} />

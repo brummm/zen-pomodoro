@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/core'
 import React, {useEffect} from 'react'
-import Brand from '../../assets/brand.svg'
+import Brand from '../../assets/Brand.svg'
 import {Container, LoadingIcon} from '../../styles/global'
 import theme from '../../styles/theme'
 import {TextPadded} from './styles'
