@@ -1,17 +1,17 @@
 import styled from 'styled-components/native'
 import { Text } from '../../styles/global'
-import theme from '../../styles/theme'
+import theme from '../../styles/themes'
 
 export const Container = styled.SafeAreaView`
   align-items: center;
-  background: ${theme.colors.pallete4};
+  background: ${props => props.theme.colors.main};
   flex: 1;
   flex-direction: column;
   padding: 50px;
 `
 
 const TextDefault = styled(Text)`
-  color: ${theme.colors.pallete3};
+  color: ${props => props.theme.colors.highContrast};
 `
 
 export const Title = styled(TextDefault)`

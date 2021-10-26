@@ -1,14 +1,16 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import Brand from '../../assets/Brand.svg'
-import CircularProgress from '../../components/CircularProgress'
-import {Container} from '../../styles/global'
-import theme from '../../styles/theme'
-import {BrandContainer, Control, Controls, MainText, SecondaryText} from './styles'
-import FaStop from '../../assets/icons/FaStop.svg'
 import FaPause from '../../assets/icons/FaPause.svg'
 import FaStepForward from '../../assets/icons/FaStepForward.svg'
+import FaStop from '../../assets/icons/FaStop.svg'
+import Progress from '../../components/Progress'
+import ConfigContext from '../../contexts/ConfigContext'
+import {useTheme} from '../../hooks/theme'
 import {Session} from '../../models/Session'
 import {Time, TimeType} from '../../models/Time'
+import { Container } from '../../styles/global'
+import {BURDGUNDY, GREEN, PINK, PURPLE} from '../../styles/themes'
+import {BrandContainer, Control, Controls, MainText, SecondaryText} from './styles'
 
 const getTexts = () => {
   const primary = 'Zen Pomodoro Timer'
@@ -21,108 +23,137 @@ const getTexts = () => {
 
 const session: Session = {
   times: [
-    {completed: false, time: 60 * 25, type: TimeType.FOCUS},
-    {completed: false, time: 60 * 5, type: TimeType.INTERVAL},
+    {completed: false, time: 1500, type: TimeType.FOCUS},
+    {completed: false, time: 300, type: TimeType.INTERVAL},
 
-    {completed: false, time: 60 * 25, type: TimeType.FOCUS},
-    {completed: false, time: 60 * 5, type: TimeType.INTERVAL},
+    {completed: false, time: 1500, type: TimeType.FOCUS},
+    {completed: false, time: 300, type: TimeType.INTERVAL},
 
-    {completed: false, time: 60 * 25, type: TimeType.FOCUS},
-    {completed: false, time: 60 * 5, type: TimeType.INTERVAL},
+    {completed: false, time: 1500, type: TimeType.FOCUS},
+    {completed: false, time: 300, type: TimeType.INTERVAL},
 
-    {completed: false, time: 60 * 25, type: TimeType.FOCUS},
-    {completed: false, time: 60 * 15, type: TimeType.BIG_INTERVAL},
+    {completed: false, time: 1500, type: TimeType.FOCUS},
+    {completed: false, time: 900, type: TimeType.BIG_INTERVAL},
   ],
 }
-const totalSteps = 4
-
-const controlDefaultOptions = {
-  width: 28,
-  height: 28,
-  fill: theme.colors.palleteHighConstrast,
-}
+const totalSteps = session.times.length
 
 export const Pomodoro: React.FC = () => {
+  const {theme, changeTheme} = useTheme()
+
+  const {autoPlay} = useContext(ConfigContext)
+
   const [timer, setTimer] = useState<number | undefined>(undefined)
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [nextTime, setNextTime] = useState<Time | undefined>(undefined)
   const [isPaused, setIsPaused] = useState(false)
-  const [current, setCurrent] = useState(0)
-  const [progress, setProgress] = useState(0)
-  const myTimeout = useRef<any>(null)
+  const [current, setCurrent] = useState<number | undefined>(undefined)
 
   useEffect(() => {
-    if (isPlaying && !isPaused) {
-      myTimeout.current = setTimeout(() => {
-        let _timer = timer || getTimeFromCurrentSession()
-        _timer--
-        setProgress(_timer ? _timer / getTimeFromCurrentSession() : 0)
-        setTimer(_timer)
-        if (_timer === 0) {
-          setIsPlaying(false)
+    if (current !== undefined) {
+      setTimer(session.times[current].time)
+    } else {
+      setTimer(undefined)
+    }
+    changeTheme(getThemeForCurrentTime())
+  }, [current])
+
+  useEffect(() => {
+    if (timer !== undefined && !isPaused) {
+      if (timer === -1) {
+        endCurrent()
+      } else {
+        const timeout = setTimeout(() => {
+          setTimer(timer - 1)
+        }, 1000)
+        return () => {
+          clearTimeout(timeout)
         }
-      }, 1000)
-      return () => {
-        clearTimeout(myTimeout.current)
       }
     }
-  })
+  }, [timer, isPaused])
 
-  const getTimeFromCurrentSession = () => {
-    return session.times[current].time
-  }
-
-  const start = (time?: Time) => {
-    setProgress(1)
-    setTimer(time?.time || getTimeFromCurrentSession())
-    setIsPlaying(true)
-  }
-
-  const stop = () => {
-    setTimer(undefined)
-    setProgress(0)
-    setCurrent(0)
-    setIsPlaying(false)
-    setIsPaused(false)
+  const start = () => {
+    next()
   }
 
   const pauseResume = () => {
     setIsPaused(!isPaused)
   }
 
-  const endTime = (index: number) => {
-    session.times[index].completed = true
+  const stop = () => {
+    setNextTime(undefined)
+    setIsPaused(false)
+    setCurrent(undefined)
   }
 
   const next = () => {
-    const newCurrent = current + 1
-    if (session.times[newCurrent] !== undefined) {
-      setCurrent(newCurrent)
-      start(session.times[newCurrent])
+    setIsPaused(false)
+    if (current === undefined) {
+      setNextTime(session.times[1])
+      setCurrent(0)
+    } else {
+      const newCurrent = current + 1
+      if (session.times[newCurrent] !== undefined) {
+        setNextTime(session.times[newCurrent + 1])
+        setCurrent(newCurrent)
+      } else {
+        sessionCompleted()
+      }
     }
   }
 
-  const timeCompleted = () => {
-    endTime(current)
-    next()
+  const endCurrent = () => {
+    setTimer(undefined)
+    if (autoPlay) {
+      next()
+    }
+  }
+
+  const getThemeForCurrentTime = (): string => {
+    if (current === undefined) return GREEN
+    switch (session.times[current].type) {
+      case TimeType.FOCUS:
+        return BURDGUNDY
+      case TimeType.INTERVAL:
+        return PURPLE
+      case TimeType.BIG_INTERVAL:
+        return PINK
+      default:
+        return GREEN
+    }
+  }
+
+  const sessionCompleted = () => {
+    setTimer(undefined)
+    setNextTime(undefined)
+    setIsPaused(false)
+    setCurrent(undefined)
+  }
+
+  const controlDefaultOptions = {
+    width: 28,
+    height: 28,
+    fill: theme.colors.highContrast,
   }
 
   const {primary: primaryText, secondary: secondaryText} = getTexts()
   return (
     <Container>
       <BrandContainer>
-        <Brand color={theme.colors.palleteHighConstrast} width="50" height="56" />
+        <Brand color={theme.colors.highContrast} width="50" height="56" />
       </BrandContainer>
-      <MainText>{primaryText} {current}</MainText>
+      <MainText>{primaryText}</MainText>
       <SecondaryText>{secondaryText}</SecondaryText>
-      <CircularProgress
-        progress={progress}
+      <Progress
         timer={timer}
         paused={isPaused}
         total={totalSteps}
         current={current}
+        nextTime={nextTime}
         startFn={start}
-        completedFn={timeCompleted}
+        completedFn={sessionCompleted}
       />
+
       {timer !== undefined && (
         <Controls>
           <Control>

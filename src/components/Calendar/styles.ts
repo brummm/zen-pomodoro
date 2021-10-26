@@ -1,6 +1,6 @@
 import styled from 'styled-components/native'
 import {TextMedium} from '../../styles/global'
-import theme from '../../styles/theme'
+import theme from '../../styles/themes'
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -21,7 +21,7 @@ export const ControlLeft = styled(Control)`
   text-align: right;
 `
 export const MonthName = styled(TextMedium)`
-  color: ${theme.colors.pallete3};
+  color: ${props => props.theme.colors.highContrast };
   text-align: center;
 `
 export const Days = styled.SafeAreaView`

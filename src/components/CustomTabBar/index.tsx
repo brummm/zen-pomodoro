@@ -1,14 +1,22 @@
 import {BottomTabBarOptions, BottomTabBarProps} from '@react-navigation/bottom-tabs'
-import React from 'react'
+import React, { FC, useContext } from 'react'
 import styled from 'styled-components/native'
 import FaBars from '../../assets/icons/FaBars.svg'
 import FaCalendarCheck from '../../assets/icons/FaCalendarCheck.svg'
 import FaClock from '../../assets/icons/FaClock.svg'
 import FaListAlt from '../../assets/icons/FaListAlt.svg'
-import theme from '../../styles/theme'
+import { useTheme } from '../../hooks/theme'
+import theme from '../../styles/themes'
 
-const TabArea = styled.SafeAreaView`
-  background: ${theme.colors.palleteHighConstrast};
+
+
+
+export const CustomTabBar = ({state, navigation}: BottomTabBarProps<BottomTabBarOptions>) => {
+  const { theme, changeTheme } = useTheme()
+  const defaultIconProps = {width: 24, height: 24, fill: theme.colors.main}
+
+  const TabArea = styled.SafeAreaView`
+  background: ${theme.colors.highContrast};
   display: flex;
   flex-direction: row;
   height: 60px;
@@ -20,31 +28,34 @@ const TabItem = styled.TouchableOpacity`
   justify-content: center;
 `
 
-const defaultIconProps = {width: 24, height: 24, fill: theme.colors.pallete3}
-
-export const CustomTabBar = ({state, navigation}: BottomTabBarProps<BottomTabBarOptions>) => {
-  const navigate = (screen: string) => {
-    navigation.navigate(screen)
+  interface Tab {
+    name: string
+    icon: FC
+    theme: string
+  }
+  const navigate = (tab: Tab) => {
+    navigation.navigate(tab.name)
+    changeTheme(tab.theme)
   }
 
   const getIconProps = (screen: string) => {
     const additionalIconProps: any = {}
     if (screen === state.routeNames[state.index]) {
-      additionalIconProps['fill'] = theme.colors.pallete4 
+      additionalIconProps['fill'] = theme.colors.emphasis
     }
     return {...defaultIconProps, ...additionalIconProps}
   }
 
   const tabs = [
-    { name: 'Pomodoro', icon: FaClock}, 
-    { name: 'Types', icon: FaListAlt}, 
-    { name: 'Reports', icon: FaCalendarCheck}, 
-    { name: 'Menu', icon: FaBars}
+    { name: 'Pomodoro', icon: FaClock, theme: 'green'}, 
+    { name: 'Types', icon: FaListAlt, theme: ''}, 
+    { name: 'Reports', icon: FaCalendarCheck, theme: 'brown'}, 
+    { name: 'Menu', icon: FaBars, theme: 'white'}
   ]
   return (
     <TabArea>
       { tabs.map((Tab, key) => (
-        <TabItem key={key} onPress={e => navigate(Tab.name)}>
+        <TabItem key={key} onPress={e => navigate(Tab)}>
           <Tab.icon {...getIconProps(Tab.name)} />
         </TabItem>
       ))}

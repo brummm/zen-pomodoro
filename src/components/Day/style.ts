@@ -1,6 +1,6 @@
 import styled from 'styled-components/native'
 import { TextMedium } from '../../styles/global'
-import theme from '../../styles/theme'
+import theme from '../../styles/themes'
 
 const daySpaceStyles = `
   padding: 10px 0;
@@ -15,6 +15,6 @@ export const DayButton = styled.TouchableOpacity`
   ${daySpaceStyles}
 `
 export const DayText = styled(TextMedium)`
-  color: ${theme.colors.pallete3};
+  color: ${props => props.theme.colors.highContrast };
   text-align: center;
 `

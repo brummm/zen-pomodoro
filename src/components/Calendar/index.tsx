@@ -1,23 +1,20 @@
-import React, { FC, useEffect, useRef } from 'react'
+import React, { FC, useContext, useEffect, useRef } from 'react'
 import { Animated } from 'react-native'
 import FaChevronLeft from '../../assets/icons/FaChevronLeft.svg'
 import FaChevronRight from '../../assets/icons/FaChevronRight.svg'
+import { useTheme } from '../../hooks/theme'
 import { getMonthData } from '../../lib/Date'
-import theme from '../../styles/theme'
 import Day from '../Day'
 import { Container, Control, ControlLeft, Days, MonthControls, MonthName } from './styles'
 
-const controlIconProps = {
-  fill: theme.colors.pallete3,
-  width: 18,
-  height: 28,
-}
+
 interface Props {
   month: number
   year: number
   changeMonth: (amount: number) => void
 }
 export const Calendar: FC<Props> = ({month, year, changeMonth}) => {
+  const { theme } = useTheme()
   const {name, last, initialFreeSpace} = getMonthData(month, year)
   const days = [...Array(last).keys()]
   days.shift()
@@ -62,6 +59,12 @@ export const Calendar: FC<Props> = ({month, year, changeMonth}) => {
   useEffect(() => {
     animateIn()
   }, [month, year])
+
+  const controlIconProps = {
+    fill: theme.colors.highContrast,
+    width: 18,
+    height: 28,
+  }
 
   return (
     <Container>

@@ -1,12 +1,11 @@
-import React, {RefAttributes} from 'react'
-import {TextProps} from 'react-native'
-import {ThemedStyledProps} from 'styled-components'
-import styled, {DefaultTheme} from 'styled-components/native'
+import { RefAttributes } from 'react'
+import { TextProps } from 'react-native'
+import { ThemedStyledProps } from 'styled-components'
+import styled, { DefaultTheme } from 'styled-components/native'
 
 export const Container = styled.SafeAreaView`
   align-items: center;
-  background: ${props => props.theme.colors.pallete3};
-  color: ${props => props.theme.colors.text};
+  background: ${props => props.theme.colors.main};
   flex: 1;
   justify-content: center;
   padding: 0 40px;
@@ -22,7 +21,7 @@ interface Props {
 export const Text = styled.Text<Props & ThemedStyledProps<TextProps & RefAttributes<Text>, DefaultTheme>>`
   font-family: 'Roboto-Light';
   font-weight: 100;
-  text-align: ${props => props.textAlign || 'left'};
+  text-align: ${props => props.textAlign || 'center'};
 `
 
 export const TextMedium = styled(Text)`

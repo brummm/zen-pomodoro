@@ -12,6 +12,10 @@ target 'zenpomodoro' do
     :hermes_enabled => false
   )
 
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
   target 'zenpomodoroTests' do
     inherit! :complete
     # Pods for testing
